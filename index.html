@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRADER FX ANALYSIS HUB</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080d18;color:white;
+ font-family:Arial,sans-serif;padding:20px;
+}
+header{color:#00e5a0;font-size:25px;font-weight:bold}
+p{color:#aab4c5}
+.card{
+ background:#151f30;padding:20px;
+ border:1px solid #26374d;
+ border-radius:14px;margin-top:18px;
+}
+h2{font-size:19px}
+button{
+ background:#00d99a;color:#06140f;
+ border:0;border-radius:9px;
+ padding:13px;font-weight:bold;
+ margin:5px;cursor:pointer;
+}
+.signal{font-size:25px;font-weight:bold}
+.green{color:#00e5a0}
+.orange{color:#ffbd55}
+</style>
+</head>
+<body>
+
+<header>TRADER FX 🚀</header>
+<p>AI ANALYSIS HUB | DERIV TRADING</p>
+
+<div class="card">
+<h2>Welcome Trader</h2>
+<p>Your personal trading analysis dashboard.</p>
+<p>Connection: <span class="orange">Not connected</span></p>
+</div>
+
+<div class="card">
+<h2>MARKET ANALYSIS</h2>
+<p>Market: Volatility 75</p>
+<p>Analysis status: Demo mode</p>
+<div class="signal green" id="signal">WAITING</div>
+<p id="details">No live market analysis yet.</p>
+<button onclick="analyse()">Run Analysis</button>
+</div>
+
+<div class="card">
+<h2>VOICE ALERTS 🔊</h2>
+<button onclick="speak()">Test Voice</button>
+<button onclick="stopVoice()">Stop Voice</button>
+</div>
+
+<div class="card">
+<h2>DERIV CONNECTION</h2>
+<p>Connect your Deriv account in a future setup.</p>
+<p>Never share your Deriv password or API token.</p>
+</div>
+
+<div class="card">
+<h2>RISK MANAGEMENT</h2>
+<p>Always use a stop loss and manage your risk.</p>
+<p class="orange">Trading involves risk. Profit is not guaranteed.</p>
+</div>
+
+<script>
+function speak(){
+ if(!window.speechSynthesis)return;
+ let msg=new SpeechSynthesisUtterance(
+ "Welcome to Trader FX Analysis Hub. Voice alerts are working."
+ );
+ speechSynthesis.speak(msg);
+}
+
+function stopVoice(){
+ if(window.speechSynthesis)speechSynthesis.cancel();
+}
+
+function analyse(){
+ document.getElementById("signal").textContent="DEMO ANALYSIS";
+ document.getElementById("details").textContent=
+ "Sample display only. No live market data connected.";
+ speak();
+}
+</script>
+
+</body>
+</html>
