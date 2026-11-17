@@ -3,91 +3,95 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TRADER FX ANALYSIS HUB</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#080d18;color:white;
- font-family:Arial,sans-serif;padding:20px;
-}
-header{color:#00e5a0;font-size:25px;font-weight:bold}
+body{margin:0;padding:18px;background:#080d18;color:white;font-family:Arial}
+header{font-size:25px;font-weight:bold;color:#00e5a0}
+.card{background:#151f30;padding:18px;border:1px solid #26374d;border-radius:14px;margin-top:18px}
 p{color:#aab4c5}
-.card{
- background:#151f30;padding:20px;
- border:1px solid #26374d;
- border-radius:14px;margin-top:18px;
-}
-h2{font-size:19px}
-button{
- background:#00d99a;color:#06140f;
- border:0;border-radius:9px;
- padding:13px;font-weight:bold;
- margin:5px;cursor:pointer;
-}
-.signal{font-size:25px;font-weight:bold}
+button{background:#00d99a;color:#06140f;border:0;padding:12px;border-radius:8px;font-weight:bold;margin:5px;cursor:pointer}
+input{width:100%;padding:13px;border-radius:8px;border:1px solid #34445a;background:#080d18;color:white;margin:8px 0}
 .green{color:#00e5a0}
 .orange{color:#ffbd55}
+#chat{height:180px;overflow:auto;background:#080d18;padding:10px;border-radius:8px}
 </style>
 </head>
 <body>
-
 <header>TRADER FX 🚀</header>
 <p>AI ANALYSIS HUB | DERIV TRADING</p>
 
 <div class="card">
 <h2>Welcome Trader</h2>
-<p>Your personal trading analysis dashboard.</p>
-<p>Connection: <span class="orange">Not connected</span></p>
+<p>Your personal trading dashboard.</p>
+<p>Deriv: <span class="orange" id="status">Not connected</span></p>
 </div>
 
 <div class="card">
-<h2>MARKET ANALYSIS</h2>
+<h2>🤖 AI MARKET ANALYSIS</h2>
 <p>Market: Volatility 75</p>
-<p>Analysis status: Demo mode</p>
-<div class="signal green" id="signal">WAITING</div>
-<p id="details">No live market analysis yet.</p>
+<p id="signal" class="green">WAITING</p>
+<p id="details">Live market data not connected.</p>
 <button onclick="analyse()">Run Analysis</button>
 </div>
 
 <div class="card">
-<h2>VOICE ALERTS 🔊</h2>
-<button onclick="speak()">Test Voice</button>
-<button onclick="stopVoice()">Stop Voice</button>
+<h2>💬 AI CHAT</h2>
+<div id="chat">
+<p>Trader FX: Welcome! Ask me about trading.</p>
+</div>
+<input id="question" placeholder="Ask about trading...">
+<button onclick="send()">Send Message</button>
 </div>
 
 <div class="card">
-<h2>DERIV CONNECTION</h2>
-<p>Connect your Deriv account in a future setup.</p>
-<p>Never share your Deriv password or API token.</p>
+<h2>🔊 VOICE ALERTS</h2>
+<button onclick="speak('Trader FX voice alerts are working')">Test Voice</button>
+<button onclick="speechSynthesis.cancel()">Stop Voice</button>
+</div>
+
+<div class="card">
+<h2>🔗 CONNECT DERIV</h2>
+<p>Secure account connection through Deriv OAuth.</p>
+<button onclick="connectDeriv()">Connect Deriv</button>
+<p id="connectmsg" class="orange">OAuth setup required.</p>
 </div>
 
 <div class="card">
 <h2>RISK MANAGEMENT</h2>
-<p>Always use a stop loss and manage your risk.</p>
+<p>Always protect your capital.</p>
 <p class="orange">Trading involves risk. Profit is not guaranteed.</p>
 </div>
 
 <script>
-function speak(){
+function speak(text){
  if(!window.speechSynthesis)return;
- let msg=new SpeechSynthesisUtterance(
- "Welcome to Trader FX Analysis Hub. Voice alerts are working."
- );
- speechSynthesis.speak(msg);
+ speechSynthesis.cancel();
+ speechSynthesis.speak(new SpeechSynthesisUtterance(text));
 }
-
-function stopVoice(){
- if(window.speechSynthesis)speechSynthesis.cancel();
-}
-
 function analyse(){
- document.getElementById("signal").textContent="DEMO ANALYSIS";
- document.getElementById("details").textContent=
- "Sample display only. No live market data connected.";
- speak();
+ document.getElementById('signal').textContent='WAIT';
+ document.getElementById('details').textContent=
+ 'Live market feed is not connected. No trading signal available.';
+ speak('Market data is not connected. Please wait.');
+}
+function send(){
+ let q=document.getElementById('question').value.trim();
+ if(!q)return;
+ let chat=document.getElementById('chat');
+ chat.innerHTML+='<p>You: '+escapeHTML(q)+'</p>';
+ chat.innerHTML+='<p>Trader FX: I can help explain trading concepts. Live AI analysis requires an AI service connection.</p>';
+ document.getElementById('question').value='';
+ chat.scrollTop=chat.scrollHeight;
+}
+function escapeHTML(s){
+ return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function connectDeriv(){
+ document.getElementById('connectmsg').textContent=
+ 'Next: configure your Deriv OAuth application and Client ID.';
 }
 </script>
-
 </body>
 </html>
