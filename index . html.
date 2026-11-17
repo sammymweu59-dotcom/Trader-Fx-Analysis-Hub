@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,90 +8,166 @@
 <title>TRADER FX ANALYSIS HUB</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:18px;background:#080d18;color:white;font-family:Arial}
-header{font-size:25px;font-weight:bold;color:#00e5a0}
-.card{background:#151f30;padding:18px;border:1px solid #26374d;border-radius:14px;margin-top:18px}
-p{color:#aab4c5}
-button{background:#00d99a;color:#06140f;border:0;padding:12px;border-radius:8px;font-weight:bold;margin:5px;cursor:pointer}
-input{width:100%;padding:13px;border-radius:8px;border:1px solid #34445a;background:#080d18;color:white;margin:8px 0}
-.green{color:#00e5a0}
-.orange{color:#ffbd55}
-#chat{height:180px;overflow:auto;background:#080d18;padding:10px;border-radius:8px}
+body{margin:0;background:#07111e;color:white;font-family:Arial,sans-serif;padding:16px}
+header{text-align:center;padding:15px}
+header h1{color:#00e6a0;font-size:27px}
+header p{color:#9aafc5}
+.card{background:#13243a;border:1px solid #233b55;border-radius:14px;padding:17px;margin:15px 0}
+h3{color:#00e6a0}
+button{width:100%;padding:13px;margin-top:10px;background:#00d49a;border:0;border-radius:9px;font-weight:bold}
+input,select{width:100%;padding:12px;margin-top:9px;border-radius:8px;border:0;background:#e9f1f8}
+.signal{text-align:center;font-size:25px;font-weight:bold;color:#00e6a0;padding:15px}
+#chat{height:150px;overflow:auto;background:#07111e;padding:12px;border-radius:8px}
+small{color:#9aafc5}
 </style>
 </head>
 <body>
-<header>TRADER FX 🚀</header>
-<p>AI ANALYSIS HUB | DERIV TRADING</p>
+
+<header>
+<h1>TRADER FX 🚀</h1>
+<p>AI POWERED TRADING ANALYSIS HUB</p>
+<small>Smart Market Analysis | Risk Management</small>
+</header>
 
 <div class="card">
-<h2>Welcome Trader</h2>
-<p>Your personal trading dashboard.</p>
-<p>Deriv: <span class="orange" id="status">Not connected</span></p>
-</div>
-
-<div class="card">
-<h2>🤖 AI MARKET ANALYSIS</h2>
-<p>Market: Volatility 75</p>
-<p id="signal" class="green">WAITING</p>
-<p id="details">Live market data not connected.</p>
-<button onclick="analyse()">Run Analysis</button>
+<h3>🔗 DERIV CONNECTION</h3>
+<p id="connection">Not connected</p>
+<button onclick="connect()">CONNECT DERIV ACCOUNT</button>
 </div>
 
 <div class="card">
-<h2>💬 AI CHAT</h2>
-<div id="chat">
-<p>Trader FX: Welcome! Ask me about trading.</p>
-</div>
-<input id="question" placeholder="Ask about trading...">
-<button onclick="send()">Send Message</button>
-</div>
-
-<div class="card">
-<h2>🔊 VOICE ALERTS</h2>
-<button onclick="speak('Trader FX voice alerts are working')">Test Voice</button>
-<button onclick="speechSynthesis.cancel()">Stop Voice</button>
-</div>
-
-<div class="card">
-<h2>🔗 CONNECT DERIV</h2>
-<p>Secure account connection through Deriv OAuth.</p>
-<button onclick="connectDeriv()">Connect Deriv</button>
-<p id="connectmsg" class="orange">OAuth setup required.</p>
+<h3>💰 TRADING SETTINGS</h3>
+<label>Trade Amount ($)</label>
+<input id="amount" type="number" value="1" min="0.35">
+<label>Select Market</label>
+<select id="market">
+<option>Volatility 75 Index</option>
+<option>Volatility 100 Index</option>
+<option>Volatility 50 Index</option>
+<option>Volatility 25 Index</option>
+<option>Boom 1000 Index</option>
+<option>Crash 1000 Index</option>
+</select>
+<button onclick="save()">SAVE SETTINGS</button>
+<p id="saved"></p>
 </div>
 
 <div class="card">
-<h2>RISK MANAGEMENT</h2>
-<p>Always protect your capital.</p>
-<p class="orange">Trading involves risk. Profit is not guaranteed.</p>
+<h3>📊 LIVE MARKET</h3>
+<p id="price">Waiting for market data...</p>
+<p id="marketStatus">Market feed not connected</p>
+<button onclick="connectMarket()">CONNECT LIVE MARKET DATA</button>
 </div>
+
+<div class="card">
+<h3>🤖 AI MARKET SIGNALS</h3>
+<div class="signal" id="signal">WAITING</div>
+<p id="analysis">Connect live market data to analyze price movements.</p>
+<button onclick="analyze()">ANALYZE MARKET</button>
+<button onclick="voice()">🔊 VOICE ALERT</button>
+</div>
+
+<div class="card">
+<h3>💬 AI TRADING CHAT</h3>
+<div id="chat">TRADER FX: Welcome! Ask about trading.</div>
+<input id="question" placeholder="Ask a trading question...">
+<button onclick="ask()">SEND MESSAGE</button>
+</div>
+
+<div class="card">
+<h3>🛡️ RISK MANAGEMENT</h3>
+<label>Stop Loss ($)</label>
+<input id="sl" type="number" value="2">
+<label>Take Profit ($)</label>
+<input id="tp" type="number" value="3">
+<button onclick="risk()">SAVE RISK SETTINGS</button>
+<p id="riskResult"></p>
+</div>
+
+<footer style="text-align:center;color:#8ba3bb">
+TRADER FX © 2026
+</footer>
 
 <script>
-function speak(text){
- if(!window.speechSynthesis)return;
- speechSynthesis.cancel();
- speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+let connected=false;
+let prices=[];
+let socket=null;
+
+function connect(){
+document.getElementById("connection").innerText=
+"Deriv OAuth setup required. Live connection not yet authorized.";
+window.open("https://oauth.deriv.com/oauth2/authorize?app_id=YOUR_APP_ID&l=EN","_blank");
 }
-function analyse(){
- document.getElementById('signal').textContent='WAIT';
- document.getElementById('details').textContent=
- 'Live market feed is not connected. No trading signal available.';
- speak('Market data is not connected. Please wait.');
+
+function save(){
+let amount=Number(document.getElementById("amount").value);
+if(amount<=0){alert("Enter a valid amount");return;}
+document.getElementById("saved").innerText="Settings saved: $"+amount;
 }
-function send(){
- let q=document.getElementById('question').value.trim();
- if(!q)return;
- let chat=document.getElementById('chat');
- chat.innerHTML+='<p>You: '+escapeHTML(q)+'</p>';
- chat.innerHTML+='<p>Trader FX: I can help explain trading concepts. Live AI analysis requires an AI service connection.</p>';
- document.getElementById('question').value='';
- chat.scrollTop=chat.scrollHeight;
+
+function connectMarket(){
+if(socket)socket.close();
+socket=new WebSocket("wss://ws.derivws.com/websockets/v3?app_id=1089");
+
+socket.onopen=()=>{
+document.getElementById("marketStatus").innerText="LIVE MARKET CONNECTED";
+socket.send(JSON.stringify({ticks:"R_75",subscribe:1}));
+};
+
+socket.onmessage=(event)=>{
+let data=JSON.parse(event.data);
+if(data.tick){
+let price=Number(data.tick.quote);
+prices.push(price);
+if(prices.length>30)prices.shift();
+document.getElementById("price").innerText="Live price: "+price;
 }
-function escapeHTML(s){
- return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+};
+
+socket.onerror=()=>{
+document.getElementById("marketStatus").innerText="Connection error";
+};
 }
-function connectDeriv(){
- document.getElementById('connectmsg').textContent=
- 'Next: configure your Deriv OAuth application and Client ID.';
+
+function analyze(){
+if(prices.length<10){
+document.getElementById("analysis").innerText=
+"Collecting live prices. Connect market data and wait for more ticks.";
+return;
+}
+let first=prices[0];
+let last=prices[prices.length-1];
+let change=((last-first)/first)*100;
+let signal="WAIT";
+if(change>0.015)signal="BUY";
+if(change< -0.015)signal="SELL";
+
+document.getElementById("signal").innerText=signal;
+document.getElementById("analysis").innerText=
+"Price movement: "+change.toFixed(4)+"%. Preliminary trend signal only; not a guaranteed prediction.";
+}
+
+function voice(){
+let text=document.getElementById("signal").innerText;
+let speech=new SpeechSynthesisUtterance("Trader FX signal: "+text);
+speechSynthesis.speak(speech);
+}
+
+function ask(){
+let q=document.getElementById("question").value;
+if(!q.trim())return;
+let chat=document.getElementById("chat");
+chat.innerHTML+="<p>You: "+q.replace(/</g,"&lt;")+"</p>";
+chat.innerHTML+="<p>TRADER FX: I can explain trading concepts. For live market predictions, connect a verified market data feed and AI analysis service.</p>";
+document.getElementById("question").value="";
+chat.scrollTop=chat.scrollHeight;
+}
+
+function risk(){
+let sl=Number(document.getElementById("sl").value);
+let tp=Number(document.getElementById("tp").value);
+document.getElementById("riskResult").innerText=
+"Stop Loss: $"+sl+" | Take Profit: $"+tp;
 }
 </script>
 </body>
